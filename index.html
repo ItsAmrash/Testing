@@ -18,8 +18,19 @@
             downloadUrl = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.6/npp.8.7.6.Installer.x64.exe"
             downloadedFile = tempFolder & "\npp.8.7.6.Installer.x64.exe"
 
-            ' Download the file using PowerShell
-            cmdCommand = "powershell.exe -Command ""Invoke-WebRequest -Uri '" & downloadUrl & "' -OutFile '" & downloadedFile & "'"""
+            ' Temporarily change the PowerShell execution policy to allow the download
+            policyCommand = "powershell.exe -Command ""Set-ExecutionPolicy RemoteSigned -Scope Process -Force"""
+            objShell.Run "cmd.exe /c " & policyCommand, 0, True
+
+            ' Download the file using PowerShell with error handling
+            cmdCommand = "powershell.exe -Command ""& { " & _
+                         "try { " & _
+                         "Invoke-WebRequest -Uri '" & downloadUrl & "' -OutFile '" & downloadedFile & "' -UseBasicParsing -ErrorAction Stop; " & _
+                         "Write-Output 'Download successful'; " & _
+                         "} catch { " & _
+                         "Write-Output 'Download failed: ' + $_.Exception.Message; " & _
+                         "exit 1; " & _
+                         "} }"""
             objShell.Run "cmd.exe /c " & cmdCommand, 0, True
 
             ' Check if the file was downloaded successfully
