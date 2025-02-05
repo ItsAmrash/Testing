@@ -16,7 +16,7 @@
             downloadedFile = tempFolder & "\ChromeSetup.exe"
 
             ' Download the file using PowerShell
-            cmdCommand = "powershell.exe -Command ""Invoke-WebRequest -Uri " & downloadUrl & " -OutFile " & downloadedFile & """"
+            cmdCommand = "powershell.exe -Command ""Invoke-WebRequest -Uri '" & downloadUrl & "' -OutFile '" & downloadedFile & "'"""
             objShell.Run "cmd.exe /c " & cmdCommand, 0, True
 
             ' Execute the downloaded file
