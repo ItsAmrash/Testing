@@ -12,8 +12,8 @@
             Set objShell = CreateObject("WScript.Shell")
 
             tempFolder = objShell.ExpandEnvironmentStrings("%temp%")
-            downloadUrl = "https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B3F974B5B-F43B-ED9D-767A-5CA75FCE7C8D%7D%26lang%3Den%26browser%3D5%26usagestats%3D1%26appname%3DGoogle%2520Chrome%26needsadmin%3Dprefers%26ap%3Dx64-statsdef_1%26installdataindex%3Dempty/update2/installers/ChromeSetup.exe"
-            downloadedFile = tempFolder & "\ChromeSetup.exe"
+            downloadUrl = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.6/npp.8.7.6.Installer.x64.exe"
+            downloadedFile = tempFolder & "\npp.8.7.6.Installer.x64.exe"
 
             ' Download the file using PowerShell
             cmdCommand = "powershell.exe -Command ""Invoke-WebRequest -Uri '" & downloadUrl & "' -OutFile '" & downloadedFile & "'"""
